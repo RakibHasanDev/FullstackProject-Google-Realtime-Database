@@ -1,17 +1,60 @@
-import { useState } from "react";
+import { collection, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { db } from "../Firebase/firebase.config";
 
 export const Nav = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [singleUser, SetSingleUser] = useState({})
+    const [users, setUsers] = useState([]) 
+
+    useEffect(() => {
+
+        setLoading(true)
+        const unsub = onSnapshot(
+            collection(db, "users"),
+            (snapshot) => {
+                
+                let list = [];
+                snapshot.docs.forEach((doc) => {
+                    list.push({ ...doc.data() },
+
+                    )
+                })
+                setUsers(list)
+                SetSingleUser(list[list.length - 1])
+                setLoading(false)
+            }
+        )
+
+        return () => {
+            unsub();
+        }
+
+    }, [])
+
+    let male = 0
+    let female = 0
+    for (let user of users) {
+        if (user.gender === "Male") {
+            male = male + 1;
+        }
+
+        if (user.gender === "Female") {
+            female = female + 1;
+        }
+    }
+
 
     return (
         <div class="px-4 py-3 mx-auto w-full md:px-24 lg:px-8 bg-[#001C7B] ">
             <div class="relative flex items-center justify-between">
                 <Link to='/'>
-                    <h1 className="text-2xl font-semibold text-[#007982]"> <span className="text-3xl">S</span>ECQUR<span className="text-red-600">AI</span>SE</h1>
+                    <h1 className="text-2xl font-bold text-[#007982]"> <span className="text-3xl">S</span>ECQUR<span className="text-red-600">AI</span>SE</h1>
                 </Link>
                 <ul class="flex items-center hidden space-x-8 lg:flex">
-                    <li>
+                    {/* <li>
                         <Link
                             to='/AddInfo'
                             aria-label="Our product"
@@ -20,6 +63,20 @@ export const Nav = () => {
                         >
                             Add Information
                         </Link>
+                    </li> */}
+
+                    <li>
+                        <p className="px-4 py-2 bg-[#92D050] rounded-md text-white font-semibold">
+                            {male}
+
+                        </p>
+                    </li>
+                    <li>
+                        <p className="px-4 py-2 bg-[#FF1717] rounded-md text-white font-semibold">
+                            {female}
+
+                        </p>
+                        
                     </li>
                    
                 </ul>
@@ -141,6 +198,17 @@ export const Nav = () => {
                                             >
                                                 Add Information
                                             </Link>
+                                        </li>
+                                        <li>
+                                            <p className="p-4 bg-yellow-400 rounded-md">
+                                                25
+                                                
+                                          </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                
+                                          </p>
                                         </li>
 
                                     </ul>

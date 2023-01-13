@@ -5,28 +5,34 @@ import Loading from '../Loading/Loading';
 
 
 import { GoThreeBars } from 'react-icons/go';
+import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
+
+import { BiLogIn } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 import UserCard from './UserCard';
+import PersonalInfo from './PersonalInfo';
 
 const Home = () => {
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState([])  
     const [loading, setLoading] = useState(false)
-
     const [singleUser, SetSingleUser] = useState({})
 
 
     useEffect(() => {
-        
+
         setLoading(true)
         const unsub = onSnapshot(
             collection(db, "users"),
             (snapshot) => {
+              
                 let list = [];
                 snapshot.docs.forEach((doc) => {
-                    list.push({...doc.data()})
+                    list.push({ ...doc.data() },
+                        
+                    )
                 })
                 setUsers(list)
-                SetSingleUser(list[0])
+                SetSingleUser(list[list.length-1])
                 setLoading(false)
             }
         )
@@ -35,10 +41,18 @@ const Home = () => {
             unsub();
         }
 
-    },[])
+    }, [])
 
     console.log(users)
-  
+    
+
+    const currentUser = (user) => {
+        
+        SetSingleUser(user)
+        
+
+    }
+
 
     if (loading) {
         return <Loading></Loading>
@@ -46,62 +60,76 @@ const Home = () => {
 
     return (
 
-        <div>
+        <div className='h-[100vh] '>
 
-           
-            
+
+
             <div className='grid grid-cols-5'>
-            
-                   
-                    <div className='col-span-3'>
-                        <div>
-                            {
-                                singleUser &&
-                            <div className='grid grid-cols-2'>
-                                    
-                                    <div className='flex gap-5'>
 
-                                        <div className='bg-sky-300 p-4 min-h-screen w-10'>
-                                            
-                                        </div>
-                                        <div className='mt-12'>
-                                            <p className='text-lg font-bold'>{singleUser.id}</p>
 
-                                            <p className='text-lg font-bold'>Person Detected</p>
-                                        </div>
+                <div className='col-span-3 '>
+                    <div className=''>
+                        {
+                            singleUser &&
+                            <div className='grid grid-cols-2 gap-4  '>
 
+                                    <div className='flex gap-5 '>
+
+                                    <div className='bg-[#00B8F1]  h-[300vh] w-12 text-gray-300 text-2xl font-semibold'>
+                                        <GoThreeBars className='mt-5 ml-2' />
+                                        <BiLogIn className='ml-2 mt-[70vh]' />
                                     </div>
+                                    <div className='mt-12'>
+                                        <p className='text-lg font-bold'>{singleUser?.id}</p>
 
-                                    <div className='mt-5'> 
-                                        <p className='text-lg font-semibold text-center my-5'> {singleUser?.gender} </p>
-                                        <img src={singleUser?.img} alt="" className='border-4 border-blue-500 w-[90%] mx-auto h-96 rounded-lg' />
+                                        <p className='text-lg font-bold'>Person Detected</p>
+
+                                            <PersonalInfo
+                                            singleUser={singleUser}></PersonalInfo>
                                     </div>
-                                        
-
-                                        
-                                       
 
                                 </div>
-                            }
-                        </div>
-                       
 
+                                <div className='mt-2'>
+                                        <p className='text-xl font-semibold  my-5  w-[90%] mx-auto'> {singleUser?.gender} </p>
+                                    <img src={singleUser?.img} alt="" className='border-8 border-gray-400 w-[90%] mx-auto md:h-[70vh] rounded-lg' />
+                                </div>
+
+
+
+
+
+                            </div>
+                        }
                     </div>
-           
+
+
+                </div>
+
                 <div className='border-4 border-[#D9D9D9] col-span-2 min-h-screen'>
-                    <div className='pt-3 px-4 flex justify-between items-center font-bold text-2xl'>
+                    <div className=' px-4 flex justify-between items-center font-bold text-2xl'>
                         <p>Events</p>
 
-                        <Link to='/AddInfo'>
+                        <div className="dropdown dropdown-left">
+                            <label tabIndex={0} className=" cursor-pointer m-1"><HiOutlineAdjustmentsHorizontal className='text-3xl'/></label>
+                            <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 text-sm">
+                                <li> <Link to='/AddInfo'>
+                                    Add Contact
 
-                            <GoThreeBars />
-                        </Link>
+                                </Link></li>
+                                <li><a>Item 2</a></li>
+                            </ul>
+                        </div>
+                       
                     </div>
 
-                    <div className='mt-5'>
+                    <div className='mt-5 '>
                         {
                             users.map(user => <UserCard
-                            user={user}
+                                key={user.id}
+                                user={user}
+                                currentUser={currentUser}
+                                
                             ></UserCard>)
                         }
                     </div>
