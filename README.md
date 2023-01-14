@@ -16,12 +16,12 @@
 - database sort
 - dynamic route
 - Redirect
-- 
+
 
 
 ## Installation
 
-- use axios in home page
+
 
 Install react with npx
 
