@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../Firebase/firebase.config';
 import Loading from '../Loading/Loading';
 
+// import fireDb from 'firebase/compat/app'
+
 
 import { GoThreeBars } from 'react-icons/go';
 import { HiOutlineAdjustmentsHorizontal } from 'react-icons/hi2';
@@ -16,6 +18,8 @@ const Home = () => {
     const [users, setUsers] = useState([])  
     const [loading, setLoading] = useState(false)
     const [singleUser, SetSingleUser] = useState({})
+    const [sortedData, setSortedData] = useState([])
+    const [sort, setSort] = useState(false)
 
 
     useEffect(() => {
@@ -53,11 +57,25 @@ const Home = () => {
 
     }
 
+    const handleChange = (e) => {
+        // setSort(true);
+        // fireDb.child("users").orderByChild(`${e.target.value}`).on("value", (snapshot) => {
+            
+        //     let sortedData = [];
+        //     snapshot.forEach((snap) => {
+        //         sortedData.push(snap.val())
+        //     });
+        //     setSortedData(sortedData)
+        // })
+        
+    }
+
+    
 
     if (loading) {
         return <Loading></Loading>
     }
-
+console.log(sortedData)
     return (
 
         <div className='h-[100vh] '>
@@ -117,7 +135,18 @@ const Home = () => {
                                     Add Contact
 
                                 </Link></li>
-                                <li><a>Item 2</a></li>
+                                <li>
+                                    <select onChange={handleChange} >
+                                        <option value={''} disabled hidden selected required> Please Select One</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="location">Location</option>
+                                        <option value="date">Date</option>
+                                    </select>
+
+                                   
+
+                                </li>
                             </ul>
                         </div>
                        
